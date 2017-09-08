@@ -267,6 +267,70 @@
 </nav>
       <div class="body-wrap">
   
+    <article id="post-mysql定时任务" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2017/09/08/mysql定时任务/" class="article-date">
+      <time datetime="2017-09-08T12:20:40.000Z" itemprop="datePublished">2017-09-08</time>
+</a>
+
+
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2017/09/08/mysql定时任务/">mysql定时任务</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>#简介<br>顾名思义，定时任务就是指定时间完成的操作，在linux系统中有crontab定时任务，windows系统也有bat脚本定时任务，在开发中经常会遇到特定时间内定时执行SQL语句的情形，在MySQL中也提供了定时任务功能。</p>
+<p>#使用</p>
+<p>##开启<br>在MySQL命令行下输入如下命令检测定时任务是否开启<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SHOW VARIABLES LIKE &apos;%event_sche%&apos;;</div></pre></td></tr></table></figure></p>
+<p>如果出现OFF的话则需要<br>通过在MySQL的配置文件中修改my.ini中加入</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">event_scheduler = 1</div></pre></td></tr></table></figure>
+<p>或者<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">SET GLOBAL event_scheduler = ON;</div></pre></td></tr></table></figure></p>
+<p>##创建存储过程<br>首先在MySQL数据库test数据库里创建一张测试表<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">CREATE TABLE `etest` (</div><div class="line">  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,</div><div class="line">  `name` varchar(20) DEFAULT NULL,</div><div class="line">  `time` int(10) unsigned DEFAULT NULL,</div><div class="line">  PRIMARY KEY (`id`)</div><div class="line">) ENGINE=InnoDB DEFAULT CHARSET=utf8;</div></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">DELIMITER //</div><div class="line">DROP PROCEDURE IF EXISTS etest//</div><div class="line">CREATE PROCEDURE etest() </div><div class="line">BEGIN</div><div class="line">INSERT INTO etest(name, time) values(&apos;testName&apos;, now());</div><div class="line">END//</div></pre></td></tr></table></figure>
+<p>##执行定时任务<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">DROP EVENT IF EXISTS eventtest//</div><div class="line">CREATE EVENT eventtest</div><div class="line">ON SCHEDULE EVERY 10 second </div><div class="line">ON COMPLETION PRESERVE</div><div class="line">DO</div><div class="line">BEGIN</div><div class="line">CALL etest();</div><div class="line">END//</div></pre></td></tr></table></figure></p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+
+      
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
+  
     <article id="post-正则表达式笔记" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
